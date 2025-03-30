@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Moon, Sun, Menu, X, Search, Bell, User } from "lucide-react";
+import { Moon, Sun, Menu, X, Search, Bell, User, Settings } from "lucide-react";
 import { motion } from "framer-motion";
 
 import { Button } from "../ui/button";
@@ -59,19 +59,25 @@ const Header = ({
             transition={{ duration: 0.5 }}
             className="flex items-center"
           >
-            <div className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center mr-2">
-              <span className="text-white font-bold text-xl">JT</span>
+            <div className="h-10 w-10 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 flex items-center justify-center mr-2 relative overflow-hidden shadow-lg">
+              {/* 3D-style logo */}
+              <div className="relative w-full h-full flex items-center justify-center">
+                <div className="absolute w-7 h-7 rounded-md bg-white/20 transform rotate-45 blur-[1px]"></div>
+                <div className="absolute w-5 h-5 rounded-full bg-indigo-300/80 top-1 left-1 blur-[1px]"></div>
+                <div className="absolute w-6 h-6 rounded-md bg-purple-400/70 bottom-1 right-1 transform rotate-12"></div>
+                <div className="relative z-10 text-white font-bold text-lg">J</div>
+              </div>
             </div>
-            <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
-              JobTrends
+            <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
+              JobPulse
             </span>
           </motion.div>
         </Link>
 
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-6">
+        {/* Desktop Navigation - Left Side */}
+        <div className="hidden md:flex items-center space-x-8 flex-1 ml-12">
           <NavigationMenu>
-            <NavigationMenuList>
+            <NavigationMenuList className="space-x-4">
               <NavigationMenuItem>
                 <NavigationMenuTrigger>Dashboard</NavigationMenuTrigger>
                 <NavigationMenuContent>
@@ -80,7 +86,7 @@ const Header = ({
                       <NavigationMenuLink asChild>
                         <Link
                           className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-blue-500/20 to-purple-500/20 p-6 no-underline outline-none focus:shadow-md"
-                          to="/dashboard"
+                          to="/market-pulse"
                         >
                           <div className="mb-2 mt-4 text-lg font-medium">
                             Market Pulse
@@ -147,7 +153,7 @@ const Header = ({
                       <NavigationMenuLink asChild>
                         <Link
                           className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                          to="/skills"
+                          to="/skills-recommendation"
                         >
                           <div className="text-sm font-medium leading-none">
                             Skill Recommendations
@@ -177,10 +183,10 @@ const Header = ({
                       <NavigationMenuLink asChild>
                         <Link
                           className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                          to="/industries"
+                          to="/diversity-insights"
                         >
                           <div className="text-sm font-medium leading-none">
-                            Diversity Metrics
+                            Diversity & Inclusion
                           </div>
                           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
                             Inclusive hiring trends and opportunities
@@ -192,13 +198,13 @@ const Header = ({
                       <NavigationMenuLink asChild>
                         <Link
                           className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                          to="/geography"
+                          to="/remote-jobs"
                         >
                           <div className="text-sm font-medium leading-none">
-                            Geographic Data
+                            Remote Opportunities
                           </div>
                           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            Explore job distribution by location
+                            Find the best remote and entry-level positions
                           </p>
                         </Link>
                       </NavigationMenuLink>
@@ -206,12 +212,36 @@ const Header = ({
                   </ul>
                 </NavigationMenuContent>
               </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
+        </div>
+
+        {/* Desktop Navigation - Right Side */}
+        <div className="hidden md:flex items-center space-x-8">
+          <NavigationMenu>
+            <NavigationMenuList className="space-x-6">
               <NavigationMenuItem>
                 <Link
-                  to="/dashboard"
+                  to="/innovation"
                   className="text-sm font-medium transition-colors hover:text-primary"
                 >
-                  Dashboard
+                  Innovation
+                </Link>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <Link
+                  to="/diversity-insights"
+                  className="text-sm font-medium transition-colors hover:text-primary"
+                >
+                  Diversity & Inclusion
+                </Link>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <Link
+                  to="/remote-jobs"
+                  className="text-sm font-medium transition-colors hover:text-primary"
+                >
+                  Remote Jobs
                 </Link>
               </NavigationMenuItem>
             </NavigationMenuList>
@@ -250,38 +280,55 @@ const Header = ({
             aria-label="Notifications"
           >
             <Bell className="h-5 w-5" />
-            <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
+            <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-red-500 flex items-center justify-center text-[10px] text-white font-medium">
+              1
+            </span>
           </Button>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
-                className="rounded-full p-0 h-10 w-10 hidden md:flex"
+                size="icon"
+                className="rounded-full hidden md:flex"
+                aria-label="User profile"
               >
-                <Avatar>
-                  <AvatarImage
-                    src="https://api.dicebear.com/7.x/avataaars/svg?seed=jobtrends"
-                    alt="User"
-                  />
-                  <AvatarFallback>JD</AvatarFallback>
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src="/avatar.png" alt="User avatar" />
+                  <AvatarFallback className="bg-gradient-to-br from-purple-400 to-pink-500 text-white">
+                    US
+                  </AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>Profile</DropdownMenuItem>
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Sign out</DropdownMenuItem>
+            <DropdownMenuContent align="end" className="w-56">
+              <Link
+                to="/profile"
+                className="w-full flex items-center py-2 px-4 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                <User className="w-4 h-4 mr-3 text-blue-600 dark:text-blue-400" />
+                <span>Profile</span>
+              </Link>
+              <Link
+                to="/settings"
+                className="w-full flex items-center py-2 px-4 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                <Settings className="w-4 h-4 mr-3 text-blue-600 dark:text-blue-400" />
+                <span>Settings</span>
+              </Link>
+              <Link to="/login">
+                <DropdownMenuItem>
+                  Sign out
+                </DropdownMenuItem>
+              </Link>
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* Mobile menu button */}
           <Button
             variant="ghost"
             size="icon"
             className="md:hidden"
             onClick={toggleMobileMenu}
-            aria-label="Toggle menu"
           >
             {isMobileMenuOpen ? (
               <X className="h-6 w-6" />
@@ -295,90 +342,100 @@ const Header = ({
       {/* Mobile menu */}
       {isMobileMenuOpen && (
         <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          exit={{ opacity: 0, height: 0 }}
-          transition={{ duration: 0.3 }}
-          className="md:hidden bg-white dark:bg-gray-900 border-t dark:border-gray-800"
+          className="absolute top-full left-0 w-full bg-white dark:bg-gray-900 shadow-lg py-4 z-10"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2 }}
         >
-          <div className="container mx-auto px-4 py-4 space-y-4">
-            <div className="relative mb-4">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <Input
-                type="search"
-                placeholder="Search trends..."
-                className="pl-10 w-full bg-gray-100 dark:bg-gray-800 border-none"
-              />
-            </div>
-
-            <nav className="space-y-4">
-              <div className="font-medium">Main Pages</div>
-              <ul className="pl-4 space-y-2">
-                <li>
-                  <Link
-                    to="/dashboard"
-                    className="text-sm text-gray-600 dark:text-gray-300 hover:text-primary"
-                  >
-                    Dashboard
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/skills"
-                    className="text-sm text-gray-600 dark:text-gray-300 hover:text-primary"
-                  >
-                    Skills Analysis
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/industries"
-                    className="text-sm text-gray-600 dark:text-gray-300 hover:text-primary"
-                  >
-                    Industry Insights
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/geography"
-                    className="text-sm text-gray-600 dark:text-gray-300 hover:text-primary"
-                  >
-                    Geographic Data
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/salary"
-                    className="text-sm text-gray-600 dark:text-gray-300 hover:text-primary"
-                  >
-                    Salary Insights
-                  </Link>
-                </li>
-              </ul>
-            </nav>
-
-            <div className="flex items-center justify-between pt-4 border-t dark:border-gray-800">
-              <div className="flex items-center space-x-2">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage
-                    src="https://api.dicebear.com/7.x/avataaars/svg?seed=jobtrends"
-                    alt="User"
-                  />
-                  <AvatarFallback>JD</AvatarFallback>
-                </Avatar>
-                <span className="text-sm font-medium">John Doe</span>
-              </div>
-
+          <div className="container mx-auto px-4 space-y-4">
+            <Link
+              to="/dashboard"
+              className="block py-2 text-lg font-medium hover:text-primary"
+              onClick={toggleMobileMenu}
+            >
+              Dashboard
+            </Link>
+            <Link
+              to="/skills"
+              className="block py-2 text-lg font-medium hover:text-primary"
+              onClick={toggleMobileMenu}
+            >
+              Skills
+            </Link>
+            <Link
+              to="/industries"
+              className="block py-2 text-lg font-medium hover:text-primary"
+              onClick={toggleMobileMenu}
+            >
+              Industries
+            </Link>
+            <Link
+              to="/geography"
+              className="block py-2 text-lg font-medium hover:text-primary"
+              onClick={toggleMobileMenu}
+            >
+              Location
+            </Link>
+            <Link
+              to="/salary"
+              className="block py-2 text-lg font-medium hover:text-primary"
+              onClick={toggleMobileMenu}
+            >
+              Salaries
+            </Link>
+            <Link
+              to="/innovation"
+              className="block py-2 text-lg font-medium hover:text-primary"
+              onClick={toggleMobileMenu}
+            >
+              Innovation
+            </Link>
+            <Link
+              to="/diversity-insights"
+              className="block py-2 text-lg font-medium hover:text-primary"
+              onClick={toggleMobileMenu}
+            >
+              Diversity & Inclusion
+            </Link>
+            <Link
+              to="/remote-jobs"
+              className="block py-2 text-lg font-medium hover:text-primary"
+              onClick={toggleMobileMenu}
+            >
+              Remote Jobs
+            </Link>
+            <Link
+              to="/profile"
+              className="block py-2 text-lg font-medium hover:text-primary"
+              onClick={toggleMobileMenu}
+            >
+              Profile
+            </Link>
+            <Link
+              to="/settings"
+              className="block py-2 text-lg font-medium hover:text-primary"
+              onClick={toggleMobileMenu}
+            >
+              Settings
+            </Link>
+            <div className="pt-2 flex items-center">
               <Button
                 variant="ghost"
-                size="icon"
-                onClick={onToggleTheme}
-                aria-label="Toggle theme"
+                size="sm"
+                onClick={() => {
+                  onToggleTheme();
+                  toggleMobileMenu();
+                }}
+                className="flex items-center gap-2"
               >
                 {isDarkMode ? (
-                  <Sun className="h-5 w-5 text-yellow-400" />
+                  <>
+                    <Sun className="h-4 w-4" /> Light Mode
+                  </>
                 ) : (
-                  <Moon className="h-5 w-5 text-gray-700" />
+                  <>
+                    <Moon className="h-4 w-4" /> Dark Mode
+                  </>
                 )}
               </Button>
             </div>

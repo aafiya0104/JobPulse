@@ -16,7 +16,7 @@ const Footer = ({ showFullFooter = true }: FooterProps) => {
         {showFullFooter ? (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div className="col-span-1">
-              <h3 className="text-xl font-bold mb-4">JobTrends</h3>
+              <h3 className="text-xl font-bold mb-4">JobPulse</h3>
               <p className="text-muted-foreground mb-4">
                 Your smart job market dashboard for data-driven career
                 decisions.
@@ -50,111 +50,119 @@ const Footer = ({ showFullFooter = true }: FooterProps) => {
             </div>
 
             <div className="col-span-1">
-              <h4 className="font-semibold mb-4">Resources</h4>
+              <h4 className="font-semibold mb-4">Quick Links</h4>
               <ul className="space-y-2">
                 <li>
                   <Link
-                    to="#"
+                    to="/dashboard"
                     className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    Career Guides
+                    Dashboard
                   </Link>
                 </li>
                 <li>
                   <Link
-                    to="#"
+                    to="/skills"
                     className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    Skill Assessments
+                    Skills
                   </Link>
                 </li>
                 <li>
                   <Link
-                    to="#"
+                    to="/industries"
                     className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    Industry Reports
+                    Industry Insights
                   </Link>
                 </li>
                 <li>
                   <Link
-                    to="#"
+                    to="/salary"
                     className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    Learning Paths
+                    Salary Insights
                   </Link>
                 </li>
                 <li>
                   <Link
-                    to="#"
+                    to="/remote-jobs"
                     className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    Salary Calculator
+                    Remote Jobs
                   </Link>
                 </li>
               </ul>
             </div>
 
             <div className="col-span-1">
-              <h4 className="font-semibold mb-4">Company</h4>
+              <h4 className="font-semibold mb-4">Features</h4>
               <ul className="space-y-2">
                 <li>
                   <Link
-                    to="#"
+                    to="/innovation"
                     className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    About Us
+                    Innovation
                   </Link>
                 </li>
                 <li>
                   <Link
-                    to="#"
+                    to="/diversity-insights"
                     className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    Our Team
+                    Diversity & Inclusion
                   </Link>
                 </li>
                 <li>
                   <Link
-                    to="#"
+                    to="/geography"
                     className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    Careers
+                    Geographic Data
                   </Link>
                 </li>
                 <li>
                   <Link
-                    to="#"
+                    to="/profile"
                     className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    Press
+                    My Profile
                   </Link>
                 </li>
                 <li>
                   <Link
-                    to="#"
+                    to="/settings"
                     className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    Contact
+                    Settings
                   </Link>
                 </li>
               </ul>
             </div>
 
             <div className="col-span-1">
-              <h4 className="font-semibold mb-4">Legal</h4>
+              <h4 className="font-semibold mb-4">More</h4>
               <ul className="space-y-2">
                 <li>
                   <Link
-                    to="#"
+                    to="/login"
                     className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    Terms of Service
+                    Login
                   </Link>
                 </li>
                 <li>
                   <Link
-                    to="#"
+                    to="/dashboard"
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    Help & Support
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/dashboard"
                     className="text-muted-foreground hover:text-primary transition-colors"
                   >
                     Privacy Policy
@@ -162,26 +170,10 @@ const Footer = ({ showFullFooter = true }: FooterProps) => {
                 </li>
                 <li>
                   <Link
-                    to="#"
+                    to="/dashboard"
                     className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    Cookie Policy
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="#"
-                    className="text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    Data Usage
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="#"
-                    className="text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    Accessibility
+                    Terms of Service
                   </Link>
                 </li>
               </ul>
@@ -193,7 +185,7 @@ const Footer = ({ showFullFooter = true }: FooterProps) => {
 
         <div className="flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-muted-foreground mb-4 md:mb-0">
-            © {currentYear} JobTrends. All rights reserved.
+            © {currentYear} JobPulse. All rights reserved.
           </p>
 
           <div className="flex items-center">

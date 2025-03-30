@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import React, { useEffect, useState, useRef } from "react";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { Card } from "../ui/card";
 import { Progress } from "../ui/progress";
 import { Button } from "../ui/button";
@@ -12,6 +12,7 @@ import {
   ChevronDown,
   Globe,
   Sparkles,
+  MousePointer,
 } from "lucide-react";
 
 interface StatCardProps {
@@ -84,20 +85,47 @@ const PulseIndicator = ({
 
 const HeroSection = () => {
   const [scrollY, setScrollY] = useState(0);
-  const { scrollYProgress } = useScroll();
-  const y1 = useTransform(scrollYProgress, [0, 1], [0, -200]);
-  const y2 = useTransform(scrollYProgress, [0, 1], [0, -100]);
-  const y3 = useTransform(scrollYProgress, [0, 1], [0, -50]);
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.9]);
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0.5]);
-  const textOpacity = useTransform(scrollYProgress, [0, 0.25], [1, 0]);
-  const statsOpacity = useTransform(scrollYProgress, [0.1, 0.4], [0, 1]);
+  const targetRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: targetRef,
+    offset: ["start start", "end start"]
+  });
+  
+  const springConfig = { stiffness: 300, damping: 30, restDelta: 0.001 };
+  const y1 = useSpring(useTransform(scrollYProgress, [0, 1], [0, -300]), springConfig);
+  const y2 = useSpring(useTransform(scrollYProgress, [0, 1], [0, -150]), springConfig);
+  const y3 = useSpring(useTransform(scrollYProgress, [0, 1], [0, -75]), springConfig);
+  const scale = useSpring(useTransform(scrollYProgress, [0, 0.5], [1, 0.9]), springConfig);
+  const opacity = useSpring(useTransform(scrollYProgress, [0, 0.5], [1, 0.5]), springConfig);
+  const textOpacity = useSpring(useTransform(scrollYProgress, [0, 0.25], [1, 0]), springConfig);
+  
+  // Mouse parallax effect with improved responsiveness
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const mouseX = useSpring(mousePosition.x, { stiffness: 250, damping: 20 });
+  const mouseY = useSpring(mousePosition.y, { stiffness: 250, damping: 20 });
+
+  const handleMouseMove = (e: MouseEvent) => {
+    const { clientX, clientY } = e;
+    const targetElement = targetRef.current;
+    if (targetElement) {
+      const { width, height, left, top } = targetElement.getBoundingClientRect();
+      const x = (clientX - left - width / 2) / 15; // Increased sensitivity
+      const y = (clientY - top - height / 2) / 15; // Increased sensitivity
+      setMousePosition({ x, y });
+    }
+  };
 
   const scrollToContent = () => {
-    window.scrollTo({
-      top: window.innerHeight * 0.8,
-      behavior: "smooth",
-    });
+    const contentElement = document.getElementById("dashboard-content");
+    if (contentElement) {
+      contentElement.scrollIntoView({ behavior: "smooth" });
+    } else {
+      // Fallback to a fixed position if element not found
+      window.scrollTo({
+        top: window.innerHeight,
+        behavior: "smooth",
+      });
+    }
   };
 
   useEffect(() => {
@@ -106,31 +134,130 @@ const HeroSection = () => {
     };
 
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("mousemove", handleMouseMove);
+    
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
   }, []);
 
   return (
-    <section className="relative w-full h-screen overflow-hidden">
-      {/* Futuristic background with parallax effect */}
+    <section className="relative w-full h-screen overflow-hidden" ref={targetRef}>
+      {/* Enhanced network-style background with cursor-based interactivity */}
       <motion.div
-        className="absolute inset-0 z-0 bg-gradient-to-br from-blue-100 via-indigo-50 to-purple-100 dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950"
+        className="absolute inset-0 z-0 bg-gradient-to-br from-indigo-100 via-purple-50 to-blue-100 dark:from-indigo-950 dark:via-purple-950 dark:to-blue-950"
         style={{ y: y1, scale }}
       >
-        <div className="absolute top-20 left-10 w-96 h-96 bg-blue-300 dark:bg-blue-800 rounded-full opacity-20 blur-3xl"></div>
-        <div className="absolute bottom-40 right-20 w-[30rem] h-[30rem] bg-indigo-300 dark:bg-indigo-800 rounded-full opacity-20 blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/3 w-[25rem] h-[25rem] bg-purple-300 dark:bg-purple-800 rounded-full opacity-20 blur-3xl"></div>
-
-        {/* Animated grid lines */}
-        <div className="absolute inset-0 opacity-10 dark:opacity-20">
-          <div
-            className="h-full w-full"
-            style={{
-              backgroundImage:
-                "linear-gradient(0deg, transparent 24%, rgba(59, 130, 246, 0.5) 25%, rgba(59, 130, 246, 0.5) 26%, transparent 27%, transparent 74%, rgba(59, 130, 246, 0.5) 75%, rgba(59, 130, 246, 0.5) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(59, 130, 246, 0.5) 25%, rgba(59, 130, 246, 0.5) 26%, transparent 27%, transparent 74%, rgba(59, 130, 246, 0.5) 75%, rgba(59, 130, 246, 0.5) 76%, transparent 77%, transparent)",
-              backgroundSize: "100px 100px",
+        {/* Network lines and nodes background with improved cursor following */}
+        <motion.svg
+          width="100%"
+          height="100%"
+          className="absolute inset-0 opacity-40 dark:opacity-50"
+          style={{ 
+            x: mouseX,
+            y: mouseY,
+            rotate: useTransform(mouseX, [-50, 50], [-5, 5]),
+          }}
+        >
+          <defs>
+            <pattern
+              id="network-pattern"
+              x="0"
+              y="0"
+              width="60"
+              height="60"
+              patternUnits="userSpaceOnUse"
+              patternTransform={`rotate(${mouseX.get() * 0.05}) scale(${1 + Math.abs(mouseY.get()) * 0.001})`}
+            >
+              <line
+                x1="30"
+                y1="0"
+                x2="30"
+                y2="60"
+                stroke="rgba(79, 70, 229, 0.6)"
+                strokeWidth="0.8"
+              />
+              <line
+                x1="0"
+                y1="30"
+                x2="60"
+                y2="30"
+                stroke="rgba(79, 70, 229, 0.6)"
+                strokeWidth="0.8"
+              />
+              <line
+                x1="0"
+                y1="0"
+                x2="60"
+                y2="60"
+                stroke="rgba(79, 70, 229, 0.5)"
+                strokeWidth="0.8"
+              />
+              <line
+                x1="60"
+                y1="0"
+                x2="0"
+                y2="60"
+                stroke="rgba(79, 70, 229, 0.5)"
+                strokeWidth="0.8"
+              />
+              <circle
+                cx="30"
+                cy="30"
+                r="2"
+                fill="rgba(147, 51, 234, 0.8)"
+              />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#network-pattern)" />
+          
+          {/* Additional animated elements */}
+          <motion.g
+            animate={{
+              opacity: [0.4, 0.6, 0.4],
+              scale: [1, 1.05, 1],
             }}
-          ></div>
-        </div>
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              repeatType: "reverse"
+            }}
+          >
+            {[...Array(12)].map((_, i) => (
+              <circle
+                key={i}
+                cx={100 + i * 150}
+                cy={100 + (i % 3) * 150}
+                r="4"
+                fill="rgba(139, 92, 246, 0.8)"
+              />
+            ))}
+          </motion.g>
+        </motion.svg>
+
+        <motion.div 
+          className="absolute top-20 left-10 w-96 h-96 bg-indigo-300 dark:bg-indigo-800 rounded-full opacity-20 blur-3xl"
+          style={{ 
+            x: useTransform(mouseX, value => value * 2.5),
+            y: useTransform(mouseY, value => value * 2.5),
+            scale: useTransform(mouseY, [-20, 20], [0.9, 1.1]) 
+          }}
+        ></motion.div>
+        <motion.div 
+          className="absolute bottom-40 right-20 w-[30rem] h-[30rem] bg-purple-300 dark:bg-purple-800 rounded-full opacity-20 blur-3xl"
+          style={{ 
+            x: useTransform(mouseX, value => value * -2),
+            y: useTransform(mouseY, value => value * -2)
+          }}
+        ></motion.div>
+        <motion.div 
+          className="absolute top-1/2 left-1/3 w-[25rem] h-[25rem] bg-blue-300 dark:bg-blue-800 rounded-full opacity-20 blur-3xl"
+            style={{
+            x: useTransform(mouseX, value => value * 1.5),
+            y: useTransform(mouseY, value => value * 1.5)
+            }}
+        ></motion.div>
       </motion.div>
 
       {/* Hero content */}
@@ -145,16 +272,43 @@ const HeroSection = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, type: "spring" }}
           >
-            <Globe className="h-20 w-20 mx-auto text-blue-600 dark:text-blue-400 mb-4" />
+            <div className="relative">
+              <motion.div
+                className="h-20 w-20 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 mx-auto flex items-center justify-center mb-4 relative overflow-hidden shadow-lg"
+                whileHover={{ rotate: 15 }}
+              >
+                {/* Improved 3D-style logo with better blending */}
+                <div className="relative w-full h-full flex items-center justify-center">
+                  <div className="absolute w-16 h-16 rounded-full bg-white/10 transform blur-[2px]"></div>
+                  <div className="absolute w-12 h-12 rounded-full bg-indigo-300/40 top-2 left-2 blur-[2px]"></div>
+                  <div className="absolute w-14 h-14 rounded-full bg-purple-400/30 bottom-2 right-2 transform blur-[1px]"></div>
+                  <div className="relative z-10 text-white font-bold text-3xl">J</div>
+                </div>
+              </motion.div>
+              
+              <motion.div 
+                className="absolute -top-1 -right-1 w-8 h-8 rounded-full bg-gradient-to-r from-blue-400 to-cyan-400 flex items-center justify-center text-white text-xs font-bold"
+                animate={{ 
+                  scale: [1, 1.2, 1],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  repeatType: "reverse"
+                }}
+              >
+                AI
+              </motion.div>
+            </div>
           </motion.div>
 
           <motion.h1
-            className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 gradient-text"
+            className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
           >
-            JobTrends Dashboard
+            JobPulse
           </motion.h1>
 
           <motion.div
@@ -184,100 +338,66 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.8 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
             <Button
               size="lg"
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full px-8 py-6 text-lg"
+              className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-full px-8 py-6 text-lg shadow-lg hover:shadow-xl group"
               onClick={scrollToContent}
             >
-              Explore Insights
+              <span>Explore Insights</span>
+              <motion.span 
+                className="inline-block ml-2"
+                animate={{ y: [0, 3, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              >
+                <ChevronDown className="h-5 w-5" />
+              </motion.span>
             </Button>
           </motion.div>
 
           <motion.div
-            className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce"
+            className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center opacity-75"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 1.2 }}
+            transition={{ delay: 1.5 }}
           >
-            <ChevronDown
-              className="h-8 w-8 text-gray-500 dark:text-gray-400"
-              onClick={scrollToContent}
-            />
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Scroll to explore</p>
+            <motion.div
+              animate={{ 
+                y: [0, 10, 0],
+              }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                repeatType: "loop",
+              }}
+            >
+              <MousePointer className="h-5 w-5 text-gray-500" />
+            </motion.div>
           </motion.div>
         </motion.div>
       </div>
 
-      {/* Stats section that appears on scroll */}
-      <motion.div
-        className="container mx-auto px-4 absolute bottom-0 left-0 right-0 z-20 pb-20"
-        style={{ opacity: statsOpacity, y: y3 }}
-      >
-        <div className="flex flex-col items-center">
-          {/* Pulse indicators */}
-          <motion.div
-            className="flex flex-wrap justify-center gap-8 mb-8"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-          >
-            <PulseIndicator
-              value={78}
-              label="Tech Sector"
-              color="bg-blue-500"
-            />
-            <PulseIndicator
-              value={65}
-              label="Healthcare"
-              color="bg-green-500"
-            />
-            <PulseIndicator
-              value={58}
-              label="Indian Market"
-              color="bg-purple-500"
-            />
-            <PulseIndicator value={42} label="Retail" color="bg-yellow-500" />
-          </motion.div>
-
-          {/* Key stats */}
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full max-w-6xl"
-            style={{ y: y2 }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
-          >
-            <StatCard
-              title="Open Positions"
-              value="248,582"
-              change={15.4}
-              icon={<Briefcase className="h-6 w-6 text-white" />}
-              color="bg-blue-500"
-            />
-            <StatCard
-              title="Tech Skills Demand"
-              value="+23.7%"
-              change={8.2}
-              icon={<LineChart className="h-6 w-6 text-white" />}
-              color="bg-purple-500"
-            />
-            <StatCard
-              title="Remote Jobs"
-              value="86,291"
-              change={32.5}
-              icon={<TrendingUp className="h-6 w-6 text-white" />}
-              color="bg-green-500"
-            />
-            <StatCard
-              title="Diversity Hiring"
-              value="+42.8%"
-              change={18.3}
-              icon={<Users className="h-6 w-6 text-white" />}
-              color="bg-pink-500"
-            />
-          </motion.div>
-        </div>
-      </motion.div>
+      {/* Divider with unique shape */}
+      <div className="absolute bottom-0 left-0 right-0 z-10">
+        <svg
+          viewBox="0 0 1440 120"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-full h-auto"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M0 0L48 8.875C96 17.75 192 35.5 288 53.25C384 71 480 88.75 576 88.75C672 88.75 768 71 864 62.125C960 53.25 1056 53.25 1152 44.375C1248 35.5 1344 17.75 1392 8.875L1440 0V120H1392C1344 120 1248 120 1152 120C1056 120 960 120 864 120C768 120 672 120 576 120C480 120 384 120 288 120C192 120 96 120 48 120H0V0Z"
+            className="fill-white dark:fill-gray-900"
+          />
+        </svg>
+      </div>
+      
+      {/* Beginning of content section marker */}
+      <div id="dashboard-content"></div>
     </section>
   );
 };

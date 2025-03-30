@@ -29,6 +29,7 @@ import {
   Sparkles,
   TrendingUp,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface Skill {
   id: string;
@@ -508,9 +509,11 @@ const RecommendationPanel: React.FC<RecommendationPanelProps> = ({
                 </div>
 
                 <div className="mt-8 text-center">
-                  <Button className="bg-indigo-600 hover:bg-indigo-700 text-white">
-                    Explore More Skills <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
+                  <Link to="/skills">
+                    <Button className="bg-indigo-600 hover:bg-indigo-700 text-white">
+                      Explore More Skills <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </Link>
                 </div>
               </motion.div>
             </TabsContent>

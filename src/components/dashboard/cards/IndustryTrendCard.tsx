@@ -35,6 +35,7 @@ interface IndustryTrendCardProps {
   description?: string;
   industries?: IndustryData[];
   onExpandClick?: () => void;
+  isExpanded?: boolean;
 }
 
 const IndustryTrendCard = ({
@@ -59,6 +60,7 @@ const IndustryTrendCard = ({
     { name: "Education", growthRate: 5.7, color: "#8b5cf6", jobCount: 83000 },
   ],
   onExpandClick = () => {},
+  isExpanded = false,
 }: IndustryTrendCardProps) => {
   const [hoveredIndustry, setHoveredIndustry] = useState<string | null>(null);
 
@@ -82,23 +84,6 @@ const IndustryTrendCard = ({
               {description}
             </CardDescription>
           </div>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={onExpandClick}
-                  className="h-8 w-8"
-                >
-                  <Maximize2 className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>View detailed analysis</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
         </div>
       </CardHeader>
       <CardContent>
@@ -174,13 +159,6 @@ const IndustryTrendCard = ({
               <Info className="h-3 w-3" />
               <span>Based on last 12 months data</span>
             </div>
-            <Button
-              variant="link"
-              className="text-xs p-0 h-auto"
-              onClick={onExpandClick}
-            >
-              View all industries
-            </Button>
           </div>
         </div>
       </CardContent>
