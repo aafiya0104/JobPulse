@@ -26,9 +26,6 @@ https://job-pulse-aafiya0104s-projects.vercel.app/dashboard
 - **Mock Data Source**: JSON files or APIs
 - **Hosting**: Vercel / Netlify
 
-## 📸 Screenshots
-_(Add screenshots here)_
-
 ## 🔧 Installation & Setup
 1. Clone the repository:
    ```sh
