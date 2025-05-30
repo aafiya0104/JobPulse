@@ -1,8 +1,8 @@
-# JobTrends
+# JobPulse
 https://job-pulse-aafiya0104s-projects.vercel.app/dashboard
 
 ## 📌 Overview
-**JobTrends** is a data-driven dashboard that analyzes real-time job market trends. It helps users identify in-demand skills, track industry shifts, and make informed career decisions.
+**JobPulse** is a data-driven dashboard that analyzes real-time job market trends. It helps users identify in-demand skills, track industry shifts, and make informed career decisions.
 
 ## 🚀 Features
 - 📊 **Real-Time Job Market Analysis**: Visualizes trending job roles and required skills.
